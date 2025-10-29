@@ -1,7 +1,7 @@
-Document Scanner (Mendix) – Self‑Hosted Resources Guide
+Document Scanner (Mendix) – Overview & Usage
 
 Overview
-This widget integrates Dynamsoft Mobile Document Scanner (MDS) in a Mendix app. It supports fully self‑hosted resources so you can avoid CDNs and/or run offline. This guide explains how to prepare the resources, host them (e.g., on S3), and configure the widget.
+This widget integrates Dynamsoft Mobile Document Scanner (MDS) into your Mendix app. It lets users capture documents from camera or upload, auto-detect borders, correct perspective, and export the corrected image to a Mendix attribute. It works out of the box via CDN and can be configured for self‑hosted resources when needed.
 
 Tested Versions
 - Widget: this repo (DocumentScanner)
@@ -9,53 +9,18 @@ Tested Versions
 - Dynamsoft Capture Vision Bundle: 3.0.6001
 - Dynamsoft Capture Vision Data: 1.0.1 (templates)
 
-What You Need To Host
-Place the following under a base URL of your choice (referred as {baseUrl}):
-1) UI template (HTML)
-- {baseUrl}/document-scanner.ui.html
+Advanced note: If you must self‑host the engine and UI files (compliance, offline), see the Advanced: Self‑Hosted Resources section at the end of this README for a minimal checklist.
 
-2) Engine resources (WASM/JS) – versioned package folders
-- {baseUrl}/libs/dynamsoft-capture-vision-bundle@3.0.6001/dist/
-  - dcv.bundle.js, dcv.bundle.esm.js, dcv.bundle.mjs, dcv.bundle.worker.js
-  - dynamsoft-capture-vision-bundle-ml.wasm, dynamsoft-capture-vision-bundle-ml.js
-  - dynamsoft-capture-vision-bundle-ml-simd.wasm, dynamsoft-capture-vision-bundle-ml-simd.js
-
-3) Data templates (required by the engine)
-- {baseUrl}/libs/dynamsoft-capture-vision-data@1.0.1/templates/
-  - DBR-PresetTemplates.json
-  - DDN-PresetTemplates.json
-  - (other templates as provided by the package)
-
-Folder Structure Example
-{baseUrl}/
-├─ document-scanner.ui.html
-└─ libs/
-   ├─ dynamsoft-capture-vision-bundle@3.0.6001/
-   │  └─ dist/
-   │     ├─ dcv.bundle.js
-   │     ├─ dcv.bundle.esm.js
-   │     ├─ dcv.bundle.mjs
-   │     ├─ dcv.bundle.worker.js
-   │     ├─ dynamsoft-capture-vision-bundle-ml.wasm
-   │     ├─ dynamsoft-capture-vision-bundle-ml.js
-   │     ├─ dynamsoft-capture-vision-bundle-ml-simd.wasm
-   │     └─ dynamsoft-capture-vision-bundle-ml-simd.js
-   └─ dynamsoft-capture-vision-data@1.0.1/
-      └─ templates/
-         ├─ DBR-PresetTemplates.json
-         └─ DDN-PresetTemplates.json
+ 
 
 Mendix Widget Configuration
 You can configure the widget in two ways:
 
-Option A – Use CDN (no configuration)
+Option A – Use CDN (recommended)
 - Leave both uiPath and engineRootPath empty. The widget loads resources from the default CDN.
 
-Option B – Explicit Paths (self-hosted)
-- uiPath = {baseUrl}/document-scanner.ui.html
-- engineRootPath = {baseUrl}/libs/
-
-Important: engineRootPath must point to the libs/ base folder only (not deep into a package/dist). The engine will append package@version/dist as needed. If you paste a deeper path, the widget normalizes it back to libs/ to prevent doubled “/dist/…/dist/” URLs.
+Option B – Self‑hosted (advanced)
+- Set uiPath and engineRootPath to your own URLs. See Advanced: Self‑Hosted Resources.
 
 Example (TypeScript snippet)
 ```ts
@@ -120,19 +85,19 @@ A Mendix widget for document scanning using the Dynamsoft Document Scanner SDK w
 
 ## Features
 
-- Document scanning from camera or file upload
-- Automatic border detection
-- Image correction and enhancement
-- Support for Chinese and custom button text
-- Configurable resource hosting (CDN or self-hosted)
+- Capture from camera or upload images (desktop and mobile)
+- Auto-detect borders with live overlay
+- One-tap auto-crop and perspective correction
+- Manual corner adjustment when needed
+- Enhancement filters (original, grayscale, binarization)
+- Multi-page capture with per-page review
+- Export corrected image as Base64 (JPEG/PNG) to a Mendix attribute
+- Localizable UI labels (Chinese by default, customizable)
+- Works online via CDN; supports self‑hosted for offline/compliance
 
 ## Demo
 
-![Capture](file:///C:/Users/11482/Desktop/New%20folder/capture.jpg)
-
-![Correction](file:///C:/Users/11482/Desktop/New%20folder/correction.jpg)
-
-![Result](file:///C:/Users/11482/Desktop/New%20folder/result.jpg)
+Screenshots removed to keep the README light. You can generate your own in your app using the widget’s camera mode and correction view.
 
 ## Quick Start
 
@@ -141,99 +106,37 @@ A Mendix widget for document scanning using the Dynamsoft Document Scanner SDK w
 3. Optionally configure custom text labels (defaults to Chinese)
 4. **Deploy** - that's it!
 
+## Properties (common)
+
+- License: Your Dynamsoft license key
+- Scanned Image Attribute: String/Blob attribute to store Base64 result
+- Text Labels: Customize button and UI texts (defaults are Chinese)
+- Resource Path: Leave empty for CDN; set custom path for self‑hosted
+
+## Events
+
+- On Done: Trigger a microflow/nanoflow after user confirms result
+- On Close/Retake: Hook user actions in the scanning flow
+
 ## Resource Configuration
 
-### Option 1: Use CDN (Recommended - No Setup Required)
+### Option 1: Use CDN (recommended)
 
-**Just leave UI Path and Engine Root Path empty** - the widget will use jsDelivr CDN automatically.
+Leave UI Path and Engine Root Path empty — the widget uses the official CDN automatically.
 
-**What it uses:**
-```
-UI Template: https://cdn.jsdelivr.net/npm/dynamsoft-document-scanner@1.3.1/dist/document-scanner.ui.html
-Engine Resources: https://cdn.jsdelivr.net/npm/
-```
+### Option 2: Self‑Hosted (advanced)
 
----
+If you need to self‑host (compliance/offline/China), see the Advanced: Self‑Hosted Resources checklist below.
 
-### Option 2: Self-Hosted Resources
+## Advanced: Self‑Hosted Resources (minimal checklist)
 
-If you need to host resources yourself (for compliance, offline support, or China CDN blocking), follow the detailed instructions below.
-
-## Required Resource Structure
-
-### Visual Folder Structure
-
-When you self-host at: `https://your-server.com/docs/`
-
-```
-docs/
-├── document-scanner.ui.html          (required at root)
-└── libs/                              (required folder)
-        ├── core@3.0.6001/            (include version)
-        │   └── dist/                  (required subfolder)
-        │       ├── Core.js
-        │       ├── Core.wasm
-        │       └── ...
-        ├── license@3.0.6001/
-        │   └── dist/
-        │       └── ...
-        ├── capture-vision-router@3.0.6001/
-        │   └── dist/
-        │       └── ...
-        ├── document-normalizer@3.0.6001/
-        │   └── dist/
-        │       └── ...
-        ├── image-processing@3.0.6001/
-        │   └── dist/
-        │       └── ...
-        └── capture-vision-std@3.0.6001/
-            └── dist/
-                └── ...
-```
-
-### Key Requirements
-
-- `document-scanner.ui.html` at the root of your path
-- `libs/` folder containing all packages
-- **Must include** `@dynamsoft/` prefix in folder names
-- **Must include** `/dist/` subfolder for each package
-- Package folders must include version: `package@version/`
-
-### Required Packages (7 total)
-
-**Bundle Package (required):**
-1. **dynamsoft-capture-vision-bundle@3.0.6001/dist/** - Main bundle
-
-**Individual Packages (6 required):**
-2. **core@3.0.6001/dist/** - Core engine
-3. **license@3.0.6001/dist/** - License management
-4. **capture-vision-router@3.0.6001/dist/** - Vision router
-5. **document-normalizer@3.0.6001/dist/** - Document normalizer
-6. **image-processing@3.0.6001/dist/** - Image processing
-7. **capture-vision-std@3.0.6001/dist/** - Standard capture
-
-Plus: **document-scanner.ui.html** at the root
-
-**⚠️ Important:** The bundle package is ALSO required, not just the individual packages!
-
-### Path Examples
-
-**S3/CDN:**
-```
-https://mybucket.s3.amazonaws.com/docs/
-```
-Expected: `https://mybucket.s3.amazonaws.com/docs/document-scanner.ui.html`
-
-**Local Widget Assets:**
-```
-/widgets/labull/documentscanner/assets/
-```
-
-Set in widget:
-```
-uiPath = https://mybucket.s3.amazonaws.com/docs/document-scanner.ui.html
-engineRootPath = https://mybucket.s3.amazonaws.com/docs/libs/
-```
+- Host `document-scanner.ui.html` and a `libs/` directory with required engine packages under a base URL.
+- In the widget, set:
+  - uiPath = {baseUrl}/document-scanner.ui.html
+  - engineRootPath = {baseUrl}/libs/
+- Ensure each package folder includes version (e.g., `package@3.0.6001/dist/*`).
+- Correct MIME types: `.wasm` → application/wasm, `.js/.mjs` → application/javascript.
+- For a ready-to-use structure, see `self hosted resources/` in this repo.
 
 ---
 
