@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget
+    id="labull.documentscanner.DocumentScanner"
+    pluginWidget="true"
+    needsEntityContext="true"
+    offlineCapable="true"
+    supportedPlatform="Web"
+    xmlns="http://www.mendix.com/widget/1.0/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd"
+>
+    <name>Document Scanner</name>
+    <description>My widget description</description>
+    <icon />
+    <properties>
+        <propertyGroup caption="General">
+            <property key="license" type="textTemplate" required="true">
+                <caption>License Key</caption>
+                <description>Enter your Dynamsoft license key</description>
+            </property>
+            <property key="scannedImageAttribute" type="attribute" required="true">
+                <caption>Scanned Image Attribute</caption>
+                <description>
+                    String attribute to store the scanned image as base64 string. This attribute will be available in
+                    the On Done action.
+                </description>
+                <attributeTypes>
+                    <attributeType name="String" />
+                </attributeTypes>
+            </property>
+            <property key="heightPercentage" type="integer" defaultValue="56">
+                <caption>Height (% of width)</caption>
+                <description>Height as a percentage of width (aspect ratio). Default is 56% (16:9)</description>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Events">
+            <property key="onDone" type="action" required="false">
+                <caption>On Done</caption>
+                <description>
+                    Action to execute when scanning is complete. The scanned image will be available in the
+                    'scannedImageAttribute' property.
+                </description>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Advanced">
+            <property key="uiPath" type="textTemplate" required="false">
+                <caption>UI Template Path (Optional)</caption>
+                <description>
+                    Full URL/path to document-scanner.ui.html. Leave empty to use CDN default.
+                </description>
+            </property>
+            <property key="engineRootPath" type="textTemplate" required="false">
+                <caption>Engine Resources Root (Optional)</caption>
+                <description>
+                    Base URL/path for engine resources libs/. Leave empty to use CDN default.
+                </description>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Text Configuration">
+            <property key="textTakePhoto" type="textTemplate" required="false">
+                <caption>Take Photo Button Text</caption>
+                <description>Text for the take photo button (default: 拍照)</description>
+            </property>
+            <property key="textClose" type="textTemplate" required="false">
+                <caption>Close Button Text</caption>
+                <description>Text for the close button (default: 关闭)</description>
+            </property>
+            <property key="textRetake" type="textTemplate" required="false">
+                <caption>Retake Button Text</caption>
+                <description>Text for the retake button (default: 重拍)</description>
+            </property>
+            <property key="textDone" type="textTemplate" required="false">
+                <caption>Done Button Text</caption>
+                <description>Text for the done button (default: 完成)</description>
+            </property>
+            <property key="textDetectBorders" type="textTemplate" required="false">
+                <caption>Detect Borders Button Text</caption>
+                <description>Text for the detect borders button (default: 检测边框)</description>
+            </property>
+            <property key="textAutoCrop" type="textTemplate" required="false">
+                <caption>Auto Crop Button Text</caption>
+                <description>Text for the auto crop button (default: 自动裁剪)</description>
+            </property>
+            <property key="textSmartCapture" type="textTemplate" required="false">
+                <caption>Smart Capture Button Text</caption>
+                <description>Text for the smart capture button (default: 智能捕获)</description>
+            </property>
+            <property key="textUploadImage" type="textTemplate" required="false">
+                <caption>Upload Image Button Text</caption>
+                <description>Text for the upload image button (default: 上传图片)</description>
+            </property>
+        </propertyGroup>
+    </properties>
+</widget>
