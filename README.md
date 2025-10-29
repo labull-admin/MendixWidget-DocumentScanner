@@ -3,6 +3,31 @@ Document Scanner (Mendix) – Overview & Usage
 Overview
 This widget integrates Dynamsoft Mobile Document Scanner (MDS) into your Mendix app. It lets users capture documents from camera or upload, auto-detect borders, correct perspective, and export the corrected image to a Mendix attribute. It works out of the box via CDN and can be configured for self‑hosted resources when needed.
 
+At‑a‑glance (quick facts)
+- Versions: UI 1.3.1, Engine 3.0.6001, Data 1.0.1
+- CDN default: leave `uiPath` and `engineRootPath` empty
+- Self‑host (advanced): set both paths to your own URLs
+- Advanced note: see “Advanced: Self‑Hosted Resources” for minimal checklist
+
+Minimal setup snippet
+```ts
+new DocumentScannerSDK({
+  license: "YOUR_LICENSE",
+  scannerViewConfig: { cameraEnhancerUIPath: "https://your.cdn/docscan/document-scanner.ui.html" },
+  engineResourcePaths: { rootDirectory: "https://your.cdn/docscan/libs/" }
+});
+```
+
+Static hosting checklist (CDN/self‑host)
+- Public read on assets; correct MIME types (.wasm, .js/.mjs, .json, .html)
+- HTTPS required for camera access; configure CORS if cross‑origin
+- Folder versions must match exactly (e.g. `...bundle@3.0.6001/dist/*`)
+
+Common pitfalls (quick fixes)
+- Double `/dist/.../dist/`: set `engineRootPath` to libs root only
+- “mapController”/init failed: verify paths, permissions, file layout
+- 403/404: fix bucket policy/CORS and file names/structure
+
 Tested Versions
 - Widget: this repo (DocumentScanner)
 - MDS UI Template: 1.3.1
